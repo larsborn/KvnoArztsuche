@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import logging
+import os
 import platform
 from collections import defaultdict
 
@@ -19,6 +20,9 @@ def main():
     parser.add_argument('--json-print', action='store_true')
     parser.add_argument('--pretty-print', action='store_true')
     parser.add_argument('--json-output-file-name')
+    parser.add_argument('--nsq-topic', default=os.getenv('NSQ_TOPIC', 'kvno_arztsuche'))
+    parser.add_argument('--nsqd-tcp-address', default=os.getenv('NSQD_TCP_ADDRESS'))
+    parser.add_argument('--nsqd-port', default=os.getenv('NSQD_PORT', '4151'), type=int)
     parser.add_argument(
         '--user-agent',
         default=F'KvnoArztsucheScraper/{__version__} (python-requests {requests.__version__}) '
@@ -26,23 +30,26 @@ def main():
     )
     args = parser.parse_args()
 
-    logger = logging.getLogger('KvnoArztsucheClient')
+    logger = logging.getLogger('KvnoArztsucheScraper')
     logger.handlers.append(ConsoleHandler())
     logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
 
     logger.debug(F'Using User-Agent string: {args.user_agent}')
     api = KvnoArztsucheApi(logger, args.user_agent)
-    outputter = Dumper(OutputConfig(
+    dumper = Dumper(logger, OutputConfig(
         json_print=args.json_print,
         pretty_print=args.pretty_print,
         json_output_file_name=args.json_output_file_name,
+        nsq_topic=args.nsq_topic,
+        nsqd_tcp_address=args.nsqd_tcp_address,
+        nsqd_port=args.nsqd_port,
     ))
     by_ort = defaultdict(int)
     try:
         i = 0
         for person in api.search():
             by_ort[person.ort] += 1
-            outputter.line(person)
+            dumper.line(person)
             i += 1
         logger.info(f'Scraped {i} rows.')
         for ort, cnt in sorted(by_ort.items(), key=lambda item: item[1]):
