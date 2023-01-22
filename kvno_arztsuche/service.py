@@ -49,6 +49,7 @@ def main():
         i = 0
         for person in api.search():
             by_ort[person.ort] += 1
+            person = api.details(person)
             dumper.line(person)
             i += 1
         logger.info(f'Scraped {i} rows.')

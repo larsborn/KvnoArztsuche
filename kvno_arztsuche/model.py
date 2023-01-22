@@ -3,7 +3,7 @@
 import datetime
 import json
 from dataclasses import dataclass, is_dataclass, asdict, field
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 
 
 @dataclass
@@ -56,6 +56,8 @@ class Person:
     is_privatarzt: bool
 
     created_at: datetime = field(default_factory=lambda: datetime.datetime.now())
+
+    details: Optional[Dict] = None
 
 
 class CustomJsonEncoder(json.JSONEncoder):

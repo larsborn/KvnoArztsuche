@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import json
 import logging
 from typing import Optional, Iterator
 
@@ -42,6 +43,7 @@ class Endpoint:
     def __init__(self, base_url: str = 'https://arztsuche.kvno.de/api/api/'):
         self.places = f'{base_url}places'
         self.places_possiblefilters = f'{base_url}places/possiblefilters'
+        self.person = f'{base_url}person/{"{}"}'
 
 
 class ApiException(Exception):
@@ -61,6 +63,13 @@ class KvnoArztsucheApi:
         self._session.mount('https://', CustomHTTPAdapter())
         self._session.mount('http://', CustomHTTPAdapter())
         self._session.headers = {'User-Agent': user_agent}
+
+    def details(self, person: Person) -> Person:
+        response = self._session.get(self._endpoint.person.format(person.id))
+        response.raise_for_status()
+        person.details = response.json()
+
+        return person
 
     def search(self, near: int = 1000, page_size=100000, address: str = '') -> Iterator[Person]:
         page = 1
