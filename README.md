@@ -1,6 +1,6 @@
 # KvnoArztsuche Scraper
 
-This is a scraper for the search page of "Kassenärztliche Vereinigung Nordrhein (KVNO)" reachable under 
+This is a scraper for the search of "Kassenärztliche Vereinigung Nordrhein (KVNO)" reachable under 
 https://arztsuche.kvno.de/. Output format is JSON that you can then easily search or generate stats.
 
 ## Usage
