@@ -3,11 +3,18 @@
 import hashlib
 import json
 import logging
-from typing import Dict
+from dataclasses import dataclass
+from typing import Dict, Optional
 
 import requests
 
 from kvno_arztsuche.model import Person, CustomJsonEncoder
+
+
+@dataclass
+class ClientSideCertificate:
+    crt_path: str
+    key_path: str
 
 
 def id_for_person(person: Person) -> str:
@@ -18,7 +25,13 @@ def id_for_person(person: Person) -> str:
 
 
 class NsqNoop:
-    def __init__(self, logger: logging.Logger, _nsqd_address: str, _nsqd_write_port: int = 4151):
+    def __init__(
+            self,
+            logger: logging.Logger,
+            _nsqd_address: str,
+            _nsqd_write_port: int = 4151,
+            _cert: Optional[ClientSideCertificate] = None,
+    ):
         self._logger = logger
 
     def publish_person(self, topic: str, person: Person) -> None:
@@ -26,11 +39,19 @@ class NsqNoop:
 
 
 class Nsq:
-    def __init__(self, logger: logging.Logger, nsqd_address: str, nsqd_write_port: int = 4151):
+    def __init__(
+            self,
+            logger: logging.Logger,
+            nsqd_address: str,
+            nsqd_write_port: int = 4151,
+            cert: Optional[ClientSideCertificate] = None,
+    ):
         self._logger = logger
         self._nsqd_address = nsqd_address
         self._nsqd_write_port = nsqd_write_port
         self._session = requests.session()
+        if cert:
+            self._session.cert = (cert.crt_path, cert.key_path)
 
     def publish_dict(self, topic: str, message: Dict) -> None:
         return self.publish(topic, json.dumps(message))

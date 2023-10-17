@@ -23,6 +23,8 @@ def main():
     parser.add_argument('--nsq-topic', default=os.getenv('NSQ_TOPIC', 'kvno_arztsuche'))
     parser.add_argument('--nsqd-address', default=os.getenv('NSQD_ADDRESS'))
     parser.add_argument('--nsqd-port', default=os.getenv('NSQD_PORT', '4151'), type=int)
+    parser.add_argument('--client-side-crt', default=os.getenv('CLIENT_SIDE_CRT'))
+    parser.add_argument('--client-side-key', default=os.getenv('CLIENT_SIDE_KEY'))
     parser.add_argument(
         '--user-agent',
         default=F'KvnoArztsucheScraper/{__version__} (python-requests {requests.__version__}) '
@@ -43,6 +45,8 @@ def main():
         nsq_topic=args.nsq_topic,
         nsqd_address=args.nsqd_address,
         nsqd_port=args.nsqd_port,
+        client_side_crt=args.client_side_crt,
+        client_side_key=args.client_side_key,
     ))
     by_ort = defaultdict(int)
     try:
