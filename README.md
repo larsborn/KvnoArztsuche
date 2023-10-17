@@ -8,7 +8,7 @@ supports ingestion into an NSQ queue.
 
 ```
 usage: service.py [-h] [--debug] [--json-print] [--pretty-print] [--json-output-file-name JSON_OUTPUT_FILE_NAME] [--nsq-topic NSQ_TOPIC]
-                  [--nsqd-tcp-address NSQD_TCP_ADDRESS] [--nsqd-port NSQD_PORT] [--user-agent USER_AGENT]
+                  [--nsqd-address NSQD_DDRESS] [--nsqd-port NSQD_PORT] [--user-agent USER_AGENT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -17,7 +17,7 @@ optional arguments:
   --pretty-print
   --json-output-file-name JSON_OUTPUT_FILE_NAME
   --nsq-topic NSQ_TOPIC
-  --nsqd-tcp-address NSQD_TCP_ADDRESS
+  --nsqd-address NSQD_ADDRESS
   --nsqd-port NSQD_PORT
   --user-agent USER_AGENT
 ```
@@ -34,7 +34,7 @@ The following will generate an `output.jsonl`:
 The following will output the data to a locally running NSQ service:
 
 ```
-> .\kvno_arztsuche\service.py --nsqd-tcp-address 127.0.0.1 --pretty-print
+> .\kvno_arztsuche\service.py --nsqd-address 127.0.0.1 --pretty-print
 ```
 
 In this mode, the script will also generate an

@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--pretty-print', action='store_true')
     parser.add_argument('--json-output-file-name')
     parser.add_argument('--nsq-topic', default=os.getenv('NSQ_TOPIC', 'kvno_arztsuche'))
-    parser.add_argument('--nsqd-tcp-address', default=os.getenv('NSQD_TCP_ADDRESS'))
+    parser.add_argument('--nsqd-address', default=os.getenv('NSQD_ADDRESS'))
     parser.add_argument('--nsqd-port', default=os.getenv('NSQD_PORT', '4151'), type=int)
     parser.add_argument(
         '--user-agent',
@@ -41,7 +41,7 @@ def main():
         pretty_print=args.pretty_print,
         json_output_file_name=args.json_output_file_name,
         nsq_topic=args.nsq_topic,
-        nsqd_tcp_address=args.nsqd_tcp_address,
+        nsqd_address=args.nsqd_address,
         nsqd_port=args.nsqd_port,
     ))
     by_ort = defaultdict(int)

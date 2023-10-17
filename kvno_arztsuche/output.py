@@ -15,14 +15,14 @@ class OutputConfig:
     pretty_print: bool
     json_output_file_name: Optional[str]
     nsq_topic: Optional[str]
-    nsqd_tcp_address: Optional[str]
+    nsqd_address: Optional[str]
     nsqd_port: Optional[int]
 
 
 class Dumper:
     def __init__(self, logger: logging.Logger, config: OutputConfig):
         self._config = config
-        self._nsq = (Nsq if config.nsqd_tcp_address else NsqNoop)(logger, config.nsqd_tcp_address, config.nsqd_port)
+        self._nsq = (Nsq if config.nsqd_address else NsqNoop)(logger, config.nsqd_address, config.nsqd_port)
 
     def line(self, person: Person):
         self._nsq.publish_person('kvno_arztsuche', person)
