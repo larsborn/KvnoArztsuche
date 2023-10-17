@@ -6,6 +6,7 @@ from typing import Optional, Iterator
 
 import requests
 import requests.adapters
+from requests import HTTPError
 from urllib3 import Retry
 
 from kvno_arztsuche.model import Person, Phone, Homepage, Email
@@ -71,7 +72,7 @@ class KvnoArztsucheApi:
 
         return person
 
-    def search(self, near: int = 1000, page_size=100000, address: str = '') -> Iterator[Person]:
+    def search(self, near: int = 1000, page_size=10000, address: str = '') -> Iterator[Person]:
         page = 1
         while True:
             self._logger.debug(f'Reading page {page}...')
@@ -103,7 +104,11 @@ class KvnoArztsucheApi:
                     }
                 }
             )
-            response.raise_for_status()
+            try:
+                response.raise_for_status()
+            except HTTPError as e:
+                self._logger.error(f'Error Response Content: {repr(response.content)}')
+                raise e
             page += 1
             data = response.json()
             person_list = data.get('personList', [])
