@@ -68,5 +68,5 @@ class Nsq:
 
     def publish_person(self, topic: str, person: Person) -> None:
         row = json.loads(json.dumps(person, indent=0, cls=CustomJsonEncoder, sort_keys=True))
-        row['_id'] = id_for_person(person)
+        row['_key'] = id_for_person(person)
         self.publish_dict(topic, row)
