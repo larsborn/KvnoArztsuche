@@ -25,6 +25,7 @@ def main():
     parser.add_argument('--nsqd-port', default=os.getenv('NSQD_PORT', '4151'), type=int)
     parser.add_argument('--client-side-crt', default=os.getenv('CLIENT_SIDE_CRT'))
     parser.add_argument('--client-side-key', default=os.getenv('CLIENT_SIDE_KEY'))
+    parser.add_argument('--stop-after', default=os.getenv('STOP_AFTER'), type=int)
     parser.add_argument(
         '--user-agent',
         default=F'KvnoArztsucheScraper/{__version__} (python-requests {requests.__version__}) '
@@ -56,6 +57,9 @@ def main():
             person = api.details(person)
             dumper.line(person)
             i += 1
+            if args.stop_after is not None and i >= args.stop_after:
+                logger.info(f'Stopped after {i} row(s) (according to --stop-after switch).')
+                break
         logger.info(f'Scraped {i} rows.')
         for ort, cnt in sorted(by_ort.items(), key=lambda item: item[1]):
             logger.info(f'{ort}: {cnt}')
